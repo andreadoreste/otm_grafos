@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import itertools
 import networkx as nx 
 
@@ -9,8 +11,7 @@ g_nodes = G.nodes()
 
 g_nodes = ['a','b','c','d','e','f','g','h','i','j','l']
 nodes =[1,2,3,4]
-global psol
-#psol = []
+
 sol =[]
 def group_by(graph,ent,n,psol=[]):
 	psol_i = list(psol)
@@ -25,30 +26,30 @@ def group_by(graph,ent,n,psol=[]):
 	#lista = list(ent)
 
 	#caso base
-		
+	#Se o tamanho da lista for menor que n, forma a ultima particao com os elementos que sobraram (resto da divisao)	
 	if len(lista)<=n:
-		#print lista
+		
 		a = []
 		while len(lista)!=0:
-			#print i
+			
 			 a.append(lista.pop())
 		
-		#print "a= "
-		#print a
+		#BACKTRACK
 		A = G.subgraph(a)
 		if nx.is_connected(A):
 			a = tuple(a)
 			psol_i.append(a)
-			#print 'psol len<n'
-		#print psol
-		#print 'psol_i'
-		#print psol_i
 			sol.append(psol_i)
 		else:
-		#return psol
-			print a
+			pass
+			#print a
+	#resto dos casos
 	else:
+		#comb e a combinacao dos v elementos totais, em grupos de tamanho n
 		comb = itertools.combinations(lista,n)
+		
+		#coloca os elementos p em uma pilha
+		#verificar stack
 		for p in comb:
 			stack=[]
 			psol_i.append(p)
@@ -56,26 +57,23 @@ def group_by(graph,ent,n,psol=[]):
 			for j in p:
 				lista.remove(j)
 				stack.append(j)
-			#print 'psol antes de chamar a recursiva'
-			#print psol
-
+			
 			#BACKTRACK
 			
+			#transforma de tupla para lista
 			p = list(p)
+			#cria subgrafo com elementos de comb
 			H = G.subgraph(p)
+			#verifica se o subgrafo é conexo
 			if nx.is_connected(H):
 				group_by(graph,lista,n,psol_i)
 				#lista.extend(stack)
 				psol_i.pop()
 			else:
-				print p
-				#pass
+				#print p
+				pass
 			lista.extend(stack)
-			#print lista
-	#print 'psol final'
-	#print psol
-	#psol = []
-	#print sol
+			
 	return sol
 a = group_by(G,g_nodes,4)
 #a = group_by(nodes2,4)
