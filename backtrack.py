@@ -145,7 +145,7 @@ def find_out_edges(list_of_edges,graph):
 	return count
 	print 'count'
 	print count
-
+'''
 t1 = time.time()
 #a = group_by(G,g_nodes,7)
 k = 3
@@ -162,5 +162,5 @@ print r
 newDocument = open('teste_out.txt','a')
 newDocument.write(r)
 newDocument.close()
-
+'''
 
