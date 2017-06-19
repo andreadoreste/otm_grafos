@@ -50,6 +50,8 @@ def guloso(graph,k):
 		print "entrou no while k"
 		#partition_k e o array que vai armazenar a particao do momento
 		partition_k = []
+
+
 		if len(nodes_not_visited)>n:
 			print nodes_not_visited
 			#Pega a mais pesada da aresta
@@ -124,5 +126,5 @@ def get_edges(graph):
 
 G = gnx.G
 print "G is loaded"
-#print guloso(G,3)
-print alg(G,6)
+print guloso(G,3)
+#print alg(G,3)

@@ -20,6 +20,7 @@ nodes =[1,2,3,4,5]
 #sol =[]
 
 def backtrack(graph,k):
+	#print 'entrou no backtrack'
 	#graph -> grafo
 	# k -> numero de particoes
 	global sol, total_weight
@@ -32,7 +33,7 @@ def backtrack(graph,k):
 	#determinando n a partir de k:
 	n = round(float(len(ent))/float(k))
 	n = int(n)
-	print 'n='+str(n)
+	#print 'n='+str(n)
 
 	result = group_by(graph,ent,n)
 	return [result,n]
@@ -81,10 +82,12 @@ def group_by(graph,ent,n,psol=[]):
 			if weight_i<total_weight:
 				total_weight= weight_i
 				sol = psol_i
+			#	print sol
 				#sol.append(psol_i)
 				#print "total_weight"
 				#print total_weight
 		else:
+			#print 'not conected'
 			pass
 			#print a
 	#resto dos casos
@@ -126,7 +129,7 @@ def group_by(graph,ent,n,psol=[]):
 				#lista.extend(stack)
 			
 			else:
-				#print p
+			#	print p
 				pass
 			lista.extend(stack)
 			#print 'lista depois'
@@ -145,7 +148,7 @@ def find_out_edges(list_of_edges,graph):
 	return count
 	print 'count'
 	print count
-'''
+
 t1 = time.time()
 #a = group_by(G,g_nodes,7)
 k = 3
@@ -162,5 +165,5 @@ print r
 newDocument = open('teste_out.txt','a')
 newDocument.write(r)
 newDocument.close()
-'''
+
 

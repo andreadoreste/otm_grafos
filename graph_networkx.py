@@ -13,7 +13,7 @@ G.add_nodes_from(nodes)
 
 G.add_weighted_edges_from(elist)
 
-print G.edges()
+#print G.edges()
 #print G.nodes()
 '''
 G.add_edge('a','b', weight=5)
