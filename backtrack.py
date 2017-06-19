@@ -1,21 +1,44 @@
 # -*- coding: utf-8 -*-
-
+#from numba import jit
 import itertools
 import networkx as nx 
-
+import time
 import graph_networkx as gnx
 
 G = gnx.G
+#G = nx.karate_club_graph()
 
 g_nodes = G.nodes()
+#g_nodes = G.nodes()
 
-g_nodes = ['a','b','c','d','e','f','g','h','i','j','l']
+#g_nodes = ['a','b','c','d','e','f','g','h','i','j','l']
 nodes =[1,2,3,4,5]
-global total_weight
-total_weight = 1000000
-global sol
-sol =[]
+#global total_weight
+#total_weight = 1000000
+#total_weight = 'inf'
+#global sol
+#sol =[]
+
+def backtrack(graph,k):
+	#graph -> grafo
+	# k -> numero de particoes
+	global sol, total_weight
+	sol =[]
+
+	total_weight = 'inf'
+	#lista de vertices:
+	ent = graph.nodes()
+
+	#determinando n a partir de k:
+	n = round(float(len(ent))/float(k))
+	n = int(n)
+	print 'n='+str(n)
+
+	result = group_by(graph,ent,n)
+	return [result,n]
+
 def group_by(graph,ent,n,psol=[]):
+	#print 'entrou no group_by'
 	global total_weight
 	global sol
 	psol_i = list(psol)
@@ -31,8 +54,11 @@ def group_by(graph,ent,n,psol=[]):
 
 	#caso base
 	#Se o tamanho da lista for menor que n, forma a ultima particao com os elementos que sobraram (resto da divisao)	
+	#print 'len'
+	#print len(lista)
+	#print lista
 	if len(lista)<=n:
-		
+		#print "entrando no len<n"
 		a = []
 		while len(lista)!=0:
 			
@@ -46,18 +72,18 @@ def group_by(graph,ent,n,psol=[]):
 			#sol.append(psol_i)
 
 			#Descobrir o valor da soma das arestas entre os blocos
-			print 'psol_i ='
-			print psol_i
+			#print 'psol_i ='
+			#print psol_i
 			weight_i = find_out_edges(psol_i,graph) 
-			print 'weight_i'
-			print weight_i
-			print psol_i
+			#print 'weight_i'
+			#print weight_i
+			#print psol_i
 			if weight_i<total_weight:
 				total_weight= weight_i
 				sol = psol_i
 				#sol.append(psol_i)
-				print "total_weight"
-				print total_weight
+				#print "total_weight"
+				#print total_weight
 		else:
 			pass
 			#print a
@@ -69,37 +95,45 @@ def group_by(graph,ent,n,psol=[]):
 		#coloca os elementos p em uma pilha
 		#verificar stack
 		for p in comb:
-			#stack=[]
+			#print 'entrou no for'
+			stack=[]
 			p = list(p)
 			#psol_i.append(p)
 			
-			#for j in p:
-			#	lista.remove(j)
-			#	stack.append(j)
+			for j in p:
+				lista.remove(j)
+				stack.append(j)
 			
 			#BACKTRACK
-			
+			#print 'lista antes'
+			#print lista
 			#cria subgrafo com elementos de comb
 			H = G.subgraph(p)
 			#verifica se o subgrafo é conexo
+			#print p
 			if nx.is_connected(H):
-				stack=[]
-				for j in p:
-					lista.remove(j)
-					stack.append(j)
+				#print 'p is connected'
+				#print p
+				#stack=[]
+				#for j in p:
+				#	lista.remove(j)
+				#	stack.append(j)
 			
 				psol_i.append(p)
 				group_by(graph,lista,n,psol_i)
 				#lista.extend(stack)
 				psol_i.pop()
-				lista.extend(stack)
+				#lista.extend(stack)
 			
 			else:
 				#print p
 				pass
-			#lista.extend(stack)
-			
+			lista.extend(stack)
+			#print 'lista depois'
+			#print lista
+
 	return (sol,total_weight)
+
 
 def find_out_edges(list_of_edges,graph):
 
@@ -112,11 +146,21 @@ def find_out_edges(list_of_edges,graph):
 	print 'count'
 	print count
 
-a = group_by(G,g_nodes,4)
+t1 = time.time()
+#a = group_by(G,g_nodes,7)
+k = 3
+result = backtrack(G,k)
+t2 = time.time()
 #a = group_by(nodes2,4)
-print a
-newDocument = open('teste_out.txt','w')
-newDocument.write(str(a))
+#print a
+total_time= t2-t1
+print "time=" + str(total_time)
+"n of nodes; k; n; partitions; min; time"
+r = str(len(G.nodes())) + ";" + str(k) + ";"+ str(result[1])+ ";" + str(result[0][0]) + ";" + str(result[0][1]) + ";" + str(total_time) + "\n"
+print r 
+
+newDocument = open('teste_out.txt','a')
+newDocument.write(r)
 newDocument.close()
 
 
