@@ -25,25 +25,18 @@ def guloso(graph,k):
 	edges_2 = get_edges(graph)
 	edges_2.sort(reverse=True,key=lambda x: x[0])
 	is_there_solution = False
-	###
-	###Adicionar aleatoriedade de edges_2
-	#### 
-
+	
 	k_i = 0
 
 	while(k_i<k):
-		print 'entrou no while k_i'
 		partition_k = []
 		A = G.subgraph(nodes_not_visited)
 		if nx.is_connected(A):
 			print "is connected=True"
 			#Iniciando a particao
-			#Escolhendo aresta aleatoria de uma lista de vertices
 			random_edge = edges_2.pop(0)
-			#random_edge = random.choice(edges_2)
-			#edges_2.remove(random_edge)
 			random_edge = random_edge[1]
-			print random_edge
+			
 			if (random_edge[0] not in nodes_not_visited) or (random_edge[1] not in nodes_not_visited):
 				continue
 			for h in random_edge:
@@ -74,9 +67,7 @@ def guloso(graph,k):
 
 		else:
 			is_there_solution = False
-			break
-			##interromper se entrar no else
-
+			
 		k_i+=1
 	if is_there_solution:
 		s= result
@@ -85,11 +76,9 @@ def guloso(graph,k):
 	print 'result'
 	print result
 	return s
+	
+if __name__ == "__main__":
 
-def alg(graph,k):
-	for i in range(100):
-		guloso(graph,k)	
-
-G= gnx.G
-print alg(G,3)
+	G= gnx.G
+	guloso(G,3)
 

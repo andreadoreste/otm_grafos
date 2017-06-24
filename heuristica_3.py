@@ -1,7 +1,28 @@
+# -*- coding: utf-8 -*-
+
 import networkx as nx 
 import graph_networkx as gnx
+import itertools
+import operator
+import random
+import copy
+import sets
 
+def main(k,graph,edge_list_origin):
+	r = heuristica(k,graph,edge_list_origin)
+	result =find_out_edges(r,graph)
+	return result
 
+def find_out_edges(list_of_edges,graph):
+
+	NG = nx.blockmodel(graph,list_of_edges)
+	eg = NG.edges_iter(data=True)
+	count = 0
+	for e in eg:
+		count+=e[2]['weight']
+	return count
+	print 'count'
+	print count
 
 
 def heuristica(k,graph,edge_list_origin):
@@ -10,17 +31,30 @@ def heuristica(k,graph,edge_list_origin):
 	# n = numero de vertices maximo numa particao
 	n = int(round(float(V)/float(k)))
 
-	#Precisa fazer uma copia?
 	nodes_visited = []
 	
 	edge_list_origin.sort(key=lambda x:x[2])
-	edge_list = list(edge_list_origin)
-	print edge_list
+	t =[]
+	for key,group in itertools.groupby(edge_list_origin, operator.itemgetter(2)):
+		t.append(list(group))
 	
+	#Arestas de custo igual separados em listas diferentes
+	edge_list = copy.deepcopy(t)
+	p = []
 	while (nodes_visited>n):
 	
-		i_edge = edge_list.pop(0)
-		print i_edge
+		#p = lista de arestas de menor custo
+		if not(p):
+			 
+			p = edge_list.pop(0)
+			print edge_list
+			print "P"
+			print p	
+		
+		#Escolhe aleatoriamente uma aresta da lista de p
+		i_edge = random.choice(p)
+		p.remove(i_edge)	
+		
 		i_edge_t = (i_edge[0],i_edge[1])
 		
 		if graph.has_edge(*i_edge_t): 	
@@ -28,18 +62,16 @@ def heuristica(k,graph,edge_list_origin):
 		else:
 			continue
 
+		#Se os vertices da arestas já estiver nos nos visitados, não faz nada
 		if((i_edge_t[0] in nodes_visited)and (i_edge_t[1] in nodes_visited)):
 			continue
-		elif ((i_edge_t[0] or i_edge_t[1])in nodes_visited) and ((i_edge_t[0] or i_edge_t[1]) not in nodes_visited):
-			print 'FUDEU'
-
 
 		elif (nx.is_connected(graph)):
-			print 'is connected'
 			pass
 		else:
+			
 			connected_components = nx.connected_components(graph)
-			print connected_components
+			
 			size_components = []
 			con_components = []
 			for i in connected_components:
@@ -49,38 +81,25 @@ def heuristica(k,graph,edge_list_origin):
 				size_components.append(len(i))
 
 			if n in size_components:
-				print n
-				print size_components
+				
 				i = size_components.index(n)
-				print 'i: '+str(i)
-				print type(i)
-				#for i in con_components:
-				#	print i
+				
 				result.append(con_components[i])
-				print con_components[i]
 				nodes_visited.extend(con_components[i])
 				for v in con_components[i]:
 					graph.remove_node(v)
+				
 				#reinicia arestas
-				edge_list = list(edge_list_origin)
+				edge_list = copy.deepcopy(t)
 				print 'result='
 				print result
+
 			else:
 				graph.add_edge(i_edge[0],i_edge[1],weight=i_edge[2])	
-
-	print result
-	print graph.nodes()
+	return result
 
 
-'''
-			graph.add_edge(i_edge[0],i_edge[1],weight=i_edge[2])
-			print 'not connected'
-
-		if ((i_edge_t[0] or i_edge_t[1])in nodes_visited) and ((i_edge_t[0] or i_edge_t[1]) not in nodes_visited):
-			print 'FUDEU'
-'''
-
-G = gnx.G
-edge_list = gnx.elist
-#print edge_list
-heuristica(4,G,edge_list)
+if __name__ == "__main__":
+	G = gnx.G
+	edge_list = gnx.elist
+	main(3,G,edge_list)
